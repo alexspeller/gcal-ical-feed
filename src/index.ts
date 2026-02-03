@@ -1,9 +1,28 @@
 import { serve } from "@hono/node-server";
+import { timingSafeEqual } from "crypto";
 import { Hono } from "hono";
 import { createOAuth2Client } from "./auth.ts";
 import { fetchEvents } from "./calendar.ts";
 import { loadConfig } from "./config.ts";
 import { generateFeed } from "./feed.ts";
+
+function secureTokenCompare(
+  provided: string | undefined,
+  expected: string,
+): boolean {
+  if (provided === undefined) return false;
+
+  const providedBuf = Buffer.from(provided);
+  const expectedBuf = Buffer.from(expected);
+
+  // Avoid leaking length information - always compare against expected length
+  if (providedBuf.length !== expectedBuf.length) {
+    timingSafeEqual(expectedBuf, expectedBuf);
+    return false;
+  }
+
+  return timingSafeEqual(providedBuf, expectedBuf);
+}
 
 const config = loadConfig();
 const auth = createOAuth2Client(config);
@@ -19,7 +38,7 @@ app.get("/feed", async (c) => {
     c.req.query("token") ??
     c.req.header("Authorization")?.replace("Bearer ", "");
 
-  if (token !== config.feedToken) {
+  if (!secureTokenCompare(token, config.feedToken)) {
     return c.text("Unauthorized", { status: 401 });
   }
 

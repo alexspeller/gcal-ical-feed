@@ -20,7 +20,9 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+    "noUncheckedSideEffectImports": true,
+    "noUncheckedIndexedAccess": true // prevent unchecked index
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
