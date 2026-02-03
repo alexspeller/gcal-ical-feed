@@ -1,0 +1,65 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.3.13/schema.json",
+  "files": {
+    "includes": ["src/**/*", "*.ts", "*.tsx", "*.js", "*.jsx", "*.json"],
+    "ignoreUnknown": true
+  },
+  "linter": {
+    "domains": {
+      "project": "recommended",
+      "test": "recommended"
+    },
+    "rules": {
+      "style": {
+        "recommended": true,
+        "useNamingConvention": {
+          "level": "warn",
+          "options": {
+            "strictCase": false,
+            "conventions": [
+              {
+                "selector": { "kind": "objectLiteralMember" },
+                "formats": ["camelCase", "snake_case"]
+              }
+            ]
+          }
+        }
+      },
+      "correctness": "error",
+      "nursery": {
+        "noFloatingPromises": "error",
+        "noShadow": "error"
+      },
+      "suspicious": {
+        "noTsIgnore": "error"
+      },
+      "security": {
+        "noSecrets": {
+          "level": "error",
+          "options": {
+            "entropyThreshold": 60
+          }
+        }
+      }
+    }
+  },
+  "formatter": {
+    "indentStyle": "space",
+    "indentWidth": 2
+  },
+  "overrides": [
+    {
+      "includes": ["**/*"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noNodejsModules": "off"
+          },
+          "style": {
+            "noProcessEnv": "off"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+pre-commit:
+  parallel: true
+  commands:
+    biome:
+      glob: "*.{js,ts,jsx,tsx,json,jsonc,css}"
+      run: ./node_modules/.bin/biome check --error-on-warnings --staged
+
+    tsc:
+      glob: "*.{js,ts,tsx,jsx}"
+      run: ./node_modules/.bin/tsc --noEmit
+
+    todos:
+      tags: style
+      run: OUTPUT=$(grep -r "TO""DO" {staged_files} | tee /dev/stderr | wc -l) && test $OUTPUT -eq 0
+
