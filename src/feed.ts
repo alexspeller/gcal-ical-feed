@@ -10,16 +10,45 @@ interface ParsedTime {
   timezone: string | undefined;
 }
 
+// ical-generator with a `timezone:` option does not convert absolute time
+// to that zone — it reads the Date's system-local wall clock and labels it
+// with TZID. Pre-shift the Date so its system-local wall clock matches the
+// real wall clock in the target zone.
+function shiftToTimezoneWallClock(date: Date, timezone: string): Date {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: timezone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(date);
+  const get = (type: Intl.DateTimeFormatPartTypes): number =>
+    Number(parts.find((p) => p.type === type)?.value ?? "0");
+  return new Date(
+    get("year"),
+    get("month") - 1,
+    get("day"),
+    get("hour"),
+    get("minute"),
+    get("second"),
+  );
+}
+
 function parseEventTime(dt: EventDateTime | undefined): ParsedTime | null {
   if (!dt) {
     return null;
   }
 
   if (dt.dateTime) {
+    const absolute = new Date(dt.dateTime);
+    const timezone = dt.timeZone ?? undefined;
     return {
-      date: new Date(dt.dateTime),
+      date: timezone ? shiftToTimezoneWallClock(absolute, timezone) : absolute,
       allDay: false,
-      timezone: dt.timeZone ?? undefined,
+      timezone,
     };
   }
 
