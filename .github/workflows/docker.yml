@@ -3,6 +3,8 @@ name: Build and Push Docker Image
 on:
   push:
     branches: [main]
+  # Rebuilds pick up base-image fixes (node:22-alpine) without a code change.
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
