@@ -17,9 +17,9 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@hono/node-server": "^1.19.9",
+    "@hono/node-server": "^1.19.17",
     "googleapis": "^171.1.0",
-    "hono": "^4.11.7",
+    "hono": "^4.13.14",
     "ical-generator": "^10.0.0",
     "ts-node": "^10.9.2"
   }
